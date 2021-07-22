@@ -15,3 +15,19 @@ export async function saveRecommendation(name: string, youtubeLink: string, genr
 export async function findByYoutubeLink(youtubeLink: string): Promise<any> {
     return await recommendationsRepository.findByYoutubeLink(youtubeLink);
 }
+
+export async function findById(id: number): Promise<any> {
+    return await recommendationsRepository.findById(id);
+}
+
+export async function upvoteRecommendation(id: number): Promise<any> {
+    return await recommendationsRepository.upvoteRecommendation(id);
+}
+
+export async function downvoteRecommendation(id: number): Promise<any> {
+    return await recommendationsRepository.downvoteRecommendation(id);
+}
+
+export async function deleteRecommendation(id: number): Promise<any> {
+    return await recommendationsRepository.deleteRecommendation(id);
+}

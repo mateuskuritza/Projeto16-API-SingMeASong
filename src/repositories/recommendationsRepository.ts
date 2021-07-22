@@ -12,3 +12,19 @@ export async function create(name: string = faker.name.findName(), genresIds: nu
 export async function findByYoutubeLink(youtubeLink: string) {
     return (await connection.query(`SELECT * FROM recommendations WHERE "youtubeLink" = $1`, [youtubeLink])).rows[0];
 }
+
+export async function findById(id: number) {
+    return (await connection.query(`SELECT * FROM recommendations WHERE id_recommendation = $1`, [id])).rows[0];
+}
+
+export async function upvoteRecommendation(id: number) {
+    return (await connection.query(`UPDATE recommendations SET score = score + 1 WHERE id_recommendation = $1 RETURNING *`, [id])).rows[0];
+}
+
+export async function downvoteRecommendation(id: number) {
+    return (await connection.query(`UPDATE recommendations SET score = score - 1 WHERE id_recommendation = $1 RETURNING *`, [id])).rows[0];
+}
+
+export async function deleteRecommendation(id: number) {
+    return (await connection.query(`DELETE FROM recommendations WHERE id_recommendation = $1`, [id]));
+}

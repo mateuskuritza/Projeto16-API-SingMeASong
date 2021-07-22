@@ -20,7 +20,6 @@ describe("POST /recommendations", () => {
 
     it("should answer status 400 with invalid name", async () => {
         const createdGenre = await genresFactory.create();
-        console.log(createdGenre);
         const response = await supertest(app).post("/recommendations").send(recommendationFactory.getObject([createdGenre.id_genre], ""));
         expect(response.status).toBe(400);
     });
@@ -52,7 +51,7 @@ describe("POST /recommendations", () => {
         expect(response.status).toBe(201);
     });
 })
-/*
+
 describe("POST /recommendations/:id/upvote", () => {
 
     it("should answer status 404 with invalid id", async () => {
@@ -63,7 +62,7 @@ describe("POST /recommendations/:id/upvote", () => {
     it("should answer status 200 success", async () => {
         const newRecommendation = await recommendationFactory.create();
         const response = await recommendationUtils.upVote(newRecommendation.id_recommendation);
-        expect(response.body).toMatchObject({ score: Number });
+        expect(response.body).toMatchObject({ score: expect.any(Number) });
         expect(response.status).toBe(200);
     });
 })
@@ -86,11 +85,11 @@ describe("POST /recommendations/:id/downvote", () => {
     it("should answer status 200 success", async () => {
         const newRecommendation = await recommendationFactory.create();
         const response = await recommendationUtils.downVote(newRecommendation.id_recommendation);
-        expect(response.body).toMatchObject({ score: Number });
+        expect(response.body).toMatchObject({ score: expect.any(Number) });
         expect(response.status).toBe(200);
     });
 })
-
+/*
 describe("GET /recommendations/random", () => {
     it("should answer status 404 with no recommendations in database", async () => {
         const response = await supertest(app).get("/recommendations/random");

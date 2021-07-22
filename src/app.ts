@@ -8,5 +8,7 @@ app.use(express.json());
 import * as recommendationsController from "./controllers/recommendationsController";
 
 app.post("/recommendations", recommendationsController.newRecommendation);
+app.post("/recommendations/:id/upvote", recommendationsController.upvoteRecommendation);
+app.post("/recommendations/:id/downvote", recommendationsController.downvoteRecommendation);
 
 export default app;

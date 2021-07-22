@@ -14,3 +14,32 @@ export async function newRecommendation(req: Request, res: Response) {
         res.status(500).send(err);
     }
 }
+
+export async function upvoteRecommendation(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const recommendation = await recommendationsServices.findById(Number(id));
+        if (!recommendation) return res.status(404).send("No recommendation found");
+        await recommendationsServices.upvoteRecommendation(recommendation.id_recommendation);
+        res.status(200).send({ score: recommendation.score + 1 });
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+export async function downvoteRecommendation(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const recommendation = await recommendationsServices.findById(Number(id));
+        if (!recommendation) return res.status(404).send("No recommendation found");
+        if (recommendation.score === -5) {
+            await recommendationsServices.deleteRecommendation(recommendation.id_recommendation);
+            return res.status(200).send("Recommendation deleted");
+        }
+        await recommendationsServices.downvoteRecommendation(recommendation.id_recommendation);
+        res.status(200).send({ score: recommendation.score - 1 });
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
