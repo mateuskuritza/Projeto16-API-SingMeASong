@@ -43,3 +43,14 @@ export async function downvoteRecommendation(req: Request, res: Response) {
     }
 }
 
+export async function randomRecommendation(req: Request, res: Response) {
+    try {
+        const randomRecommendation = await recommendationsServices.randomRecommendation();
+        if (!randomRecommendation) return res.status(404).send("No recommendation found");
+        const genres = await recommendationsServices.getGenresById(randomRecommendation.id_recommendation);
+        randomRecommendation.genres = genres;
+        res.status(200).send(randomRecommendation);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}

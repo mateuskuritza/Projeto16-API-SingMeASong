@@ -15,7 +15,6 @@ afterAll(() => {
     database.end();
 })
 
-
 describe("POST /recommendations", () => {
 
     it("should answer status 400 with invalid name", async () => {
@@ -55,12 +54,14 @@ describe("POST /recommendations", () => {
 describe("POST /recommendations/:id/upvote", () => {
 
     it("should answer status 404 with invalid id", async () => {
-        const newRecommendation = await recommendationFactory.create();
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
         const response = await recommendationUtils.upVote(newRecommendation.id_recommendation + 1);
         expect(response.status).toBe(404);
     });
     it("should answer status 200 success", async () => {
-        const newRecommendation = await recommendationFactory.create();
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
         const response = await recommendationUtils.upVote(newRecommendation.id_recommendation);
         expect(response.body).toMatchObject({ score: expect.any(Number) });
         expect(response.status).toBe(200);
@@ -69,40 +70,47 @@ describe("POST /recommendations/:id/upvote", () => {
 
 describe("POST /recommendations/:id/downvote", () => {
 
-    it("should answer status 404 with invalid id", async () => {
-        const newRecommendation = await recommendationFactory.create();
-        const response = await recommendationUtils.downVote(newRecommendation.id_recommendation + 1);
-        expect(response.status).toBe(404);
-    });
-
     it("should remove recommendation when score < -5", async () => {
-        const newRecommendation = await recommendationFactory.create();
-        for (let i = 0; i < 6; i++) await recommendationUtils.downVote(newRecommendation.id_recommendation)
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
+        for (let i = 0; i <= 5; i++) {
+            await recommendationUtils.downVote(newRecommendation.id_recommendation);
+        }
         const result = await database.getAllRecommendations();
         expect(result.length).toBe(0);
     });
 
+    it("should answer status 404 with invalid id", async () => {
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
+        const response = await recommendationUtils.downVote(newRecommendation.id_recommendation + 1);
+        expect(response.status).toBe(404);
+    });
+
+
     it("should answer status 200 success", async () => {
-        const newRecommendation = await recommendationFactory.create();
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
         const response = await recommendationUtils.downVote(newRecommendation.id_recommendation);
         expect(response.body).toMatchObject({ score: expect.any(Number) });
         expect(response.status).toBe(200);
     });
 })
-/*
+
 describe("GET /recommendations/random", () => {
     it("should answer status 404 with no recommendations in database", async () => {
         const response = await supertest(app).get("/recommendations/random");
         expect(response.status).toBe(404);
     })
     it("should answer status 200 with random recommendation", async () => {
-        const newRecommendation = await recommendationFactory.create();
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
         const response = await supertest(app).get(`/recommendations/random`);
         expect(response.status).toBe(200);
         expect(response.body.id_recommendation).toBe(newRecommendation.id_recommendation);
     });
 })
-
+/*
 describe("GET /recommendations/top/:amount", () => {
     it("should answer status 400 with invalid amount", async () => {
         const response = await supertest(app).get("/recommendations/top/xxx");

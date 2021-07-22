@@ -10,5 +10,6 @@ import * as recommendationsController from "./controllers/recommendationsControl
 app.post("/recommendations", recommendationsController.newRecommendation);
 app.post("/recommendations/:id/upvote", recommendationsController.upvoteRecommendation);
 app.post("/recommendations/:id/downvote", recommendationsController.downvoteRecommendation);
+app.get("/recommendations/random", recommendationsController.randomRecommendation);
 
 export default app;

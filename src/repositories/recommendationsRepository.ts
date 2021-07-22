@@ -26,5 +26,23 @@ export async function downvoteRecommendation(id: number) {
 }
 
 export async function deleteRecommendation(id: number) {
-    return (await connection.query(`DELETE FROM recommendations WHERE id_recommendation = $1`, [id]));
+    await connection.query(`DELETE FROM recommendations_genres WHERE id_recommendation = $1`, [id]);
+    await connection.query(`DELETE FROM recommendations WHERE id_recommendation = $1`, [id]);
+}
+
+export async function randomRecommendation() {
+    return (await connection.query(`SELECT * FROM recommendations ORDER BY RANDOM() LIMIT 1`)).rows[0];
+}
+
+export async function bestRecommendations() {
+    return (await connection.query(`SELECT * FROM recommendations WHERE score > 10`)).rows;
+}
+
+export async function worstRecommendations() {
+    return (await connection.query(`SELECT * FROM recommendations WHERE score < 11`)).rows;
+}
+
+export async function findGenresById(id: number): Promise<number[]> {
+    const genres = (await connection.query(`SELECT id_genre FROM recommendations_genres WHERE id_recommendation = $1`, [id])).rows;
+    return genres.map(genre => genre.id_genre);
 }

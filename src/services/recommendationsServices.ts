@@ -31,3 +31,24 @@ export async function downvoteRecommendation(id: number): Promise<any> {
 export async function deleteRecommendation(id: number): Promise<any> {
     return await recommendationsRepository.deleteRecommendation(id);
 }
+
+export async function randomRecommendation(): Promise<any> {
+    const randomNumber = Math.floor(Math.random() * 100);
+    let recommendations: object[] = [];
+    if (randomNumber <= 70) {
+        recommendations = await recommendationsRepository.bestRecommendations();
+    } else {
+        recommendations = await recommendationsRepository.worstRecommendations();
+    }
+
+    if (recommendations !== []) {
+        const randomRecommendation = Math.floor(Math.random() * (recommendations.length - 1));
+        return recommendations[randomRecommendation];
+    }
+
+    return await recommendationsRepository.randomRecommendation();
+}
+
+export async function getGenresById(id: number): Promise<any> {
+    return await recommendationsRepository.findGenresById(id);
+}
