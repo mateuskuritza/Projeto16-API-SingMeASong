@@ -5,8 +5,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/test", (req, res) => {
-    res.send("OK!");
-});
+import * as recommendationsController from "./controllers/recommendationsController";
+
+app.post("/recommendations", recommendationsController.newRecommendation);
 
 export default app;
