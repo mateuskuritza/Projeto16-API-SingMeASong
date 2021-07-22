@@ -4,8 +4,8 @@ export function end() {
     connection.end();
 }
 
-export function clear() {
-    connection.query(`TRUNCATE TABLE recommendations, recommendations_genres, genres RESTART IDENTITY`);
+export async function clear() {
+    await connection.query(`TRUNCATE TABLE recommendations, recommendations_genres, genres RESTART IDENTITY`);
 }
 
 export async function getAllRecommendations() {

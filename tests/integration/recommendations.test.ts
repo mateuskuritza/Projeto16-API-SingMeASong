@@ -3,11 +3,12 @@ import supertest from "supertest";
 import app from "../../src/app";
 
 import * as recommendationFactory from "../factories/recommendationFactory";
+import * as genresFactory from "../factories/genreFactory";
 import * as database from "../utils/database";
 import * as recommendationUtils from "../utils/recommendations";
 
-beforeEach(() => {
-    database.clear();
+beforeEach(async () => {
+    await database.clear();
 });
 
 afterAll(() => {
@@ -16,23 +17,42 @@ afterAll(() => {
 
 
 describe("POST /recommendations", () => {
+
     it("should answer status 400 with invalid name", async () => {
-        const response = await supertest(app).post("/recommendations").send(recommendationFactory.getObject("", []));
+        const createdGenre = await genresFactory.create();
+        console.log(createdGenre);
+        const response = await supertest(app).post("/recommendations").send(recommendationFactory.getObject([createdGenre.id_genre], ""));
         expect(response.status).toBe(400);
     });
     it("should answer status 400 with invalid youtubeLink", async () => {
-        const response = await supertest(app).post("/recommendations").send(recommendationFactory.getObject("", [], "fakeLink"));
+        const createdGenre = await genresFactory.create();
+        const response = await supertest(app).post("/recommendations").send(recommendationFactory.getObject([createdGenre.id_genre], "Fulano", "fakeLink"));
+        expect(response.status).toBe(400);
+    });
+    it("should answer status 400 with duplicate youtubeLink", async () => {
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = recommendationFactory.getObject([createdGenre.id_genre]);
+        await supertest(app).post("/recommendations").send(newRecommendation);
+        const response = await supertest(app).post("/recommendations").send(newRecommendation);
+        expect(response.status).toBe(400);
+    });
+    it("should answer status 400 with invalid genreId", async () => {
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = recommendationFactory.getObject([createdGenre.id_genre + 1]);
+        await supertest(app).post("/recommendations").send(newRecommendation);
+        const response = await supertest(app).post("/recommendations").send(newRecommendation);
         expect(response.status).toBe(400);
     });
     it("should answer status 201 when created recommendation", async () => {
-        const newRecommendation = recommendationFactory.getObject();
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = recommendationFactory.getObject([createdGenre.id_genre]);
         const response = await supertest(app).post("/recommendations").send(newRecommendation);
         const result = await database.getAllRecommendations();
         expect(result.length).toBe(1);
         expect(response.status).toBe(201);
     });
 })
-
+/*
 describe("POST /recommendations/:id/upvote", () => {
 
     it("should answer status 404 with invalid id", async () => {
@@ -101,4 +121,4 @@ describe("GET /recommendations/top/:amount", () => {
             newRecommendation2
         ]);
     });
-})
+})*/
