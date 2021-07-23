@@ -34,6 +34,14 @@ describe("POST /recommendations", () => {
         const response = await supertest(app).post("/recommendations").send(newRecommendation);
         expect(response.status).toBe(400);
     });
+    it("should answer status 400 with duplicate name", async () => {
+        const createdGenre = await genresFactory.create();
+        const newRecommendation = recommendationFactory.getObject([createdGenre.id_genre], "Fulano");
+        const newRecommendation2 = recommendationFactory.getObject([createdGenre.id_genre], "Fulano");
+        await supertest(app).post("/recommendations").send(newRecommendation);
+        const response = await supertest(app).post("/recommendations").send(newRecommendation2);
+        expect(response.status).toBe(400);
+    });
     it("should answer status 400 with invalid genreId", async () => {
         const createdGenre = await genresFactory.create();
         const newRecommendation = recommendationFactory.getObject([createdGenre.id_genre + 1]);
@@ -123,6 +131,8 @@ describe("GET /recommendations/top/:amount", () => {
         const newRecommendation3 = await recommendationFactory.create([createdGenre.id_genre]);
         await recommendationUtils.upVote(newRecommendation2.id_recommendation);
         await recommendationUtils.upVote(newRecommendation3.id_recommendation);
+        newRecommendation2.genres = [{ id: createdGenre.id_genre, name: createdGenre.name }];
+        newRecommendation3.genres = [{ id: createdGenre.id_genre, name: createdGenre.name }];
         newRecommendation2.score = 1;
         newRecommendation3.score = 1;
         const response = await supertest(app).get(`/recommendations/top/` + 2);

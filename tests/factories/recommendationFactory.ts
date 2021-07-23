@@ -18,10 +18,11 @@ export function getObject(genresIds: number[] = [], name: string = faker.name.fi
     }
 }
 
-export async function create(genresIds: number[] = [1], name: string = faker.name.findName(), youtubeLink: string = randomYoutubeLink()): Promise<{ id_recommendation: number, name: string, youtubeLink: string, score: number }> {
+export async function create(genresIds: number[] = [1], name: string = faker.name.findName(), youtubeLink: string = randomYoutubeLink()): Promise<{ id_recommendation: number, name: string, youtubeLink: string, score: number, genres: any[] }> {
     const newRecommendation = (await connection.query(`INSERT INTO recommendations (name, "youtubeLink") values ($1, $2) RETURNING *`, [name, youtubeLink])).rows[0];
     genresIds.forEach(async genreId => {
         await connection.query(`INSERT INTO recommendations_genres (id_recommendation, id_genre) values ($1, $2)`, [newRecommendation.id_recommendation, genreId]);
     });
+    newRecommendation.genres = genresIds;
     return newRecommendation;
 }

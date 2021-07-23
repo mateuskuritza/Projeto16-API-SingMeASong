@@ -18,5 +18,6 @@ app.get("/recommendations/top/:amount", recommendationsController.topRecommendat
 app.post("/genres", genresController.newGenre);
 app.get("/genres", genresController.getAllGenres);
 app.get("/genres/:id", genresController.getGenre);
+app.get("/recommendations/genres/:id/random", genresController.randomRecommendationByGenre);
 
 export default app;

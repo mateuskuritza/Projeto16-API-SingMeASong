@@ -6,8 +6,9 @@ export async function newRecommendation(req: Request, res: Response) {
         const { name, youtubeLink, genresIds } = req.body;
         const validRecommendation = await recommendationsServices.validRecommendation(name, youtubeLink, genresIds)
         if (!validRecommendation) return res.status(400).send("Invalid name, youtube link or genre id");
-        const alreadyExists = await recommendationsServices.findByYoutubeLink(youtubeLink);
-        if (alreadyExists) return res.status(400).send("Youtube link already exists");
+        const alreadyExistsYoutube = await recommendationsServices.findByYoutubeLink(youtubeLink);
+        const alreadyExistsName = await recommendationsServices.findByName(name);
+        if (alreadyExistsYoutube || alreadyExistsName) return res.status(400).send("Youtube link or name already exists");
         await recommendationsServices.saveRecommendation(name, youtubeLink, genresIds);
         res.sendStatus(201);
     } catch (err) {
@@ -60,7 +61,12 @@ export async function topRecommendations(req: Request, res: Response) {
         const amount = Number(req.params.amount) || false;
         if (!amount) return res.status(400).send("Amount valid is required");
         const topRecommendations = await recommendationsServices.topRecommendations(amount);
-        res.status(200).send(topRecommendations);
+        const result = await Promise.all((topRecommendations.map(async (r: any) => {
+            const genres = await recommendationsServices.getGenresById(r.id_recommendation);
+            r.genres = genres;
+            return r;
+        })));
+        res.status(200).send(result);
     } catch (err) {
         res.status(500).send(err);
     }

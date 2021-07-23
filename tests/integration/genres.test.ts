@@ -6,8 +6,8 @@ import * as database from "../utils/database";
 import * as genreFactory from "../factories/genreFactory";
 import * as recommendationFactory from "../factories/recommendationFactory";
 
-beforeEach(() => {
-    database.clear();
+beforeEach(async () => {
+    await database.clear();
 });
 
 afterAll(() => {
@@ -40,34 +40,50 @@ describe("GET /genres", () => {
         const two = await genreFactory.create("B");
         const result = await supertest(app).get("/genres");
         expect(result.body).toEqual([
-            one,
-            two
+            {
+                id: one.id_genre,
+                name: one.name
+            },
+            {
+                id: two.id_genre,
+                name: two.name
+            }
         ])
     });
 })
-/*
+
 describe("GET /genres/:id", () => {
+
     it("should return a genre with his recommendations", async () => {
         const genre = await genreFactory.create();
-        const firstRec = await recommendationFactory.create("musica1", [genre.id_genre]);
+        const firstRec = await recommendationFactory.create([genre.id_genre]);
         const result = await supertest(app).get(`/genres/${genre.id_genre}`);
+        firstRec.genres = [{ id: genre.id_genre, name: genre.name }];
         expect(result.body).toMatchObject({
             id: genre.id_genre,
             name: genre.name,
             score: 0,
-            recommendations: { firstRec, genres: Array }
+            recommendations: [firstRec]
         })
     });
-
+    it("should return 400 invalid id", async () => {
+        const result = await supertest(app).get("/genres/x");
+        expect(result.status).toBe(400);
+    });
     it("should return 404 if genre not found", async () => {
-        const result = await supertest(app).get("/genres/0");
+        const result = await supertest(app).get("/genres/1");
         expect(result.status).toBe(404);
     });
 })
 
 
 describe("GET /recommendations/genres/:id/random", () => {
-
+    it("should return 400 invalid id", async () => {
+        const result = await supertest(app).get("/recommendations/genres/x/random");
+        expect(result.status).toBe(400);
+    });
+    it("should return 404 if genre not found", async () => {
+        const result = await supertest(app).get("/recommendations/genres/1/random");
+        expect(result.status).toBe(404);
+    });
 })
-
-*/

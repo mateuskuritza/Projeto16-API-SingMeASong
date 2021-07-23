@@ -20,6 +20,10 @@ export async function findById(id: number): Promise<any> {
     return await recommendationsRepository.findById(id);
 }
 
+export async function findByName(name: string): Promise<any> {
+    return await recommendationsRepository.findByName(name);
+}
+
 export async function upvoteRecommendation(id: number): Promise<any> {
     return await recommendationsRepository.upvoteRecommendation(id);
 }
@@ -65,4 +69,10 @@ export async function getRecommendation(id: number) {
     } catch (err) {
         console.log(err);
     }
+}
+
+export async function getRandomRecommendationByGenreId(genreId: number): Promise<any> {
+    const recommendation = await recommendationsRepository.getRandomRecommendationByGenreId(genreId);
+    recommendation.genres = await getGenresById(recommendation.id_recommendation);
+    return recommendation;
 }

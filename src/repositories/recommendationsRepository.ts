@@ -17,6 +17,10 @@ export async function findById(id: number) {
     return (await connection.query(`SELECT * FROM recommendations WHERE id_recommendation = $1`, [id])).rows[0];
 }
 
+export async function findByName(name: string) {
+    return (await connection.query(`SELECT * FROM recommendations WHERE name = $1`, [name])).rows[0];
+}
+
 export async function upvoteRecommendation(id: number) {
     return (await connection.query(`UPDATE recommendations SET score = score + 1 WHERE id_recommendation = $1 RETURNING *`, [id])).rows[0];
 }
@@ -60,4 +64,8 @@ export async function findGenresById(id: number): Promise<object[]> {
 
 export async function topRecommendations(number: number = 10): Promise<{ id_recommendation: number, name: string, youtubeLink: string, score: number }[]> {
     return (await connection.query(`SELECT * FROM recommendations ORDER BY score DESC LIMIT $1`, [number])).rows;
+}
+
+export async function getRandomRecommendationByGenreId(genreId: number): Promise<any> {
+    return (await connection.query(`SELECT * FROM recommendations WHERE id_recommendation IN (SELECT id_recommendation FROM recommendations_genres WHERE id_genre = $1) ORDER BY RANDOM() LIMIT 1`, [genreId])).rows[0];
 }

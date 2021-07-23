@@ -11,11 +11,11 @@ export async function create(name: string) {
 }
 
 export async function getAll() {
-    return (await connection.query(`SELECT id_genre, name FROM genres ORDER BY name ASC`)).rows;
+    return (await connection.query(`SELECT id_genre AS id, name FROM genres ORDER BY name ASC`)).rows;
 }
 
 export async function getById(id: number) {
-    return (await connection.query(`
+    const result = (await connection.query(`
     SELECT g.id_genre, rg.id_recommendation, g.name AS genre_name, r.name as recommendation_name
     FROM genres AS g 
     JOIN "recommendations_genres" as rg 
@@ -23,6 +23,7 @@ export async function getById(id: number) {
     JOIN recommendations as r 
     ON r.id_recommendation = rg.id_recommendation AND rg.id_genre = $1
     `, [id])).rows;
+    return result
 }
 
 export async function getRecommendationsGenres(id: number) {
