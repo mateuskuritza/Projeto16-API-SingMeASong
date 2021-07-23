@@ -52,3 +52,7 @@ export async function randomRecommendation(): Promise<any> {
 export async function getGenresById(id: number): Promise<any> {
     return await recommendationsRepository.findGenresById(id);
 }
+
+export async function topRecommendations(amount: number): Promise<any> {
+    return await recommendationsRepository.topRecommendations(amount);
+}

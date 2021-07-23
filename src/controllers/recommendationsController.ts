@@ -54,3 +54,14 @@ export async function randomRecommendation(req: Request, res: Response) {
         res.status(500).send(err);
     }
 }
+
+export async function topRecommendations(req: Request, res: Response) {
+    try {
+        const amount = Number(req.params.amount) || false;
+        if (!amount) return res.status(400).send("Amount valid is required");
+        const topRecommendations = await recommendationsServices.topRecommendations(amount);
+        res.status(200).send(topRecommendations);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}

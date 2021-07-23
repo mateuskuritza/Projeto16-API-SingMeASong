@@ -14,7 +14,7 @@ beforeEach(async () => {
 afterAll(() => {
     database.end();
 })
-
+/*
 describe("POST /recommendations", () => {
 
     it("should answer status 400 with invalid name", async () => {
@@ -110,22 +110,24 @@ describe("GET /recommendations/random", () => {
         expect(response.body.id_recommendation).toBe(newRecommendation.id_recommendation);
     });
 })
-/*
+*/
 describe("GET /recommendations/top/:amount", () => {
     it("should answer status 400 with invalid amount", async () => {
         const response = await supertest(app).get("/recommendations/top/xxx");
         expect(response.status).toBe(400);
     });
     it("should answer status 200 with top amount recommendations", async () => {
-        const newRecommendation1 = await recommendationFactory.create();
-        const newRecommendation2 = await recommendationFactory.create("name", [], "https://www.youtube.com/watch?v=7EjIdjKNRls&ab_channel=RadarRecordsOficial");
-        await recommendationUtils.upVote(newRecommendation1.id_recommendation);
-        newRecommendation1.score = 1;
+        const createdGenre = await genresFactory.create();
+        await recommendationFactory.create([createdGenre.id_genre]);
+        const newRecommendation2 = await recommendationFactory.create([createdGenre.id_genre]);
+        const newRecommendation3 = await recommendationFactory.create([createdGenre.id_genre]);
+        await recommendationUtils.upVote(newRecommendation2.id_recommendation);
+        await recommendationUtils.upVote(newRecommendation3.id_recommendation);
+        newRecommendation2.score = 1;
+        newRecommendation3.score = 1;
         const response = await supertest(app).get(`/recommendations/top/` + 2);
         expect(response.status).toBe(200);
-        expect(response.body).toBe([
-            newRecommendation1,
-            newRecommendation2
-        ]);
+        console.log(response.body);
+        expect(JSON.stringify(response.body)).toMatch(JSON.stringify([newRecommendation2, newRecommendation3]));
     });
-})*/
+})

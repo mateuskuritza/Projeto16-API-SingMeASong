@@ -46,3 +46,7 @@ export async function findGenresById(id: number): Promise<number[]> {
     const genres = (await connection.query(`SELECT id_genre FROM recommendations_genres WHERE id_recommendation = $1`, [id])).rows;
     return genres.map(genre => genre.id_genre);
 }
+
+export async function topRecommendations(number: number = 10): Promise<{ id_recommendation: number, name: string, youtubeLink: string, score: number }[]> {
+    return (await connection.query(`SELECT * FROM recommendations ORDER BY score DESC LIMIT $1`, [number])).rows;
+}
