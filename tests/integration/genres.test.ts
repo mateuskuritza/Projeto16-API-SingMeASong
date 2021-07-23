@@ -1,7 +1,7 @@
 import "../../src/setup";
 import supertest from "supertest";
 import app from "../../src/app";
-/*
+
 import * as database from "../utils/database";
 import * as genreFactory from "../factories/genreFactory";
 import * as recommendationFactory from "../factories/recommendationFactory";
@@ -18,6 +18,10 @@ describe("POST /genres", () => {
     it("should create a new genre with status 201", async () => {
         const genre = genreFactory.getObject();
         const result = await supertest(app).post("/genres").send(genre);
+        expect(result.body).toMatchObject({
+            name: genre.name,
+            id_genre: expect.any(Number),
+        });
         expect(result.status).toBe(201);
     });
     it("should return 409 existing genre", async () => {
@@ -27,7 +31,7 @@ describe("POST /genres", () => {
         expect(result.status).toBe(409);
     });
 })
-
+/*
 describe("GET /genres", () => {
     it("should return all genres", async () => {
         const genres = database.getAllGenres();

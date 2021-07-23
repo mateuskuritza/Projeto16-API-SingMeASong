@@ -110,7 +110,7 @@ describe("GET /recommendations/random", () => {
         expect(response.body.id_recommendation).toBe(newRecommendation.id_recommendation);
     });
 })
-*/
+
 describe("GET /recommendations/top/:amount", () => {
     it("should answer status 400 with invalid amount", async () => {
         const response = await supertest(app).get("/recommendations/top/xxx");
@@ -130,4 +130,4 @@ describe("GET /recommendations/top/:amount", () => {
         console.log(response.body);
         expect(JSON.stringify(response.body)).toMatch(JSON.stringify([newRecommendation2, newRecommendation3]));
     });
-})
+})*/
