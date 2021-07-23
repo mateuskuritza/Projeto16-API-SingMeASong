@@ -53,16 +53,3 @@ export async function getGenre(req: Request, res: Response) {
         res.status(500).send(err);
     }
 }
-
-export async function randomRecommendationByGenre(req: Request, res: Response) {
-    try {
-        const { id } = req.params;
-        if (!id || (isNaN(parseInt(id)))) return res.status(400).send("Id is required");
-        const genre = await genresServices.getById(parseInt(id));
-        if (genre.length === 0) return res.status(404).send("Genre not found");
-        const recommendation = await recommendationsServices.getRandomRecommendationByGenreId(genre[0].id_genre);
-        res.status(200).send(recommendation);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-}
