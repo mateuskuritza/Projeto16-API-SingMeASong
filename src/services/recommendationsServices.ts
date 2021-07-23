@@ -56,3 +56,13 @@ export async function getGenresById(id: number): Promise<any> {
 export async function topRecommendations(amount: number): Promise<any> {
     return await recommendationsRepository.topRecommendations(amount);
 }
+
+export async function getRecommendation(id: number) {
+    try {
+        const recommendation = await findById(id);
+        recommendation.genres = await getGenresById(id);
+        return recommendation
+    } catch (err) {
+        console.log(err);
+    }
+}

@@ -14,7 +14,7 @@ afterAll(() => {
     database.clear();
     database.end();
 })
-/*
+
 describe("POST /genres", () => {
     it("should create a new genre with status 201", async () => {
         const genre = genreFactory.getObject();
@@ -32,7 +32,7 @@ describe("POST /genres", () => {
         expect(result.status).toBe(409);
     });
 })
-*/
+
 
 describe("GET /genres", () => {
     it("should return all genres in alphabetical order", async () => {
@@ -57,7 +57,6 @@ describe("GET /genres/:id", () => {
             score: 0,
             recommendations: { firstRec, genres: Array }
         })
-        // falta arrumar
     });
 
     it("should return 404 if genre not found", async () => {

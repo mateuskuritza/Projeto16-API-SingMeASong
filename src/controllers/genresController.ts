@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as genresServices from "../services/genresServices";
+import { getRecommendation } from "../services/recommendationsServices";
 
 export async function newGenre(req: Request, res: Response) {
     try {
@@ -25,7 +26,7 @@ export async function getAllGenres(req: Request, res: Response) {
         res.status(500).send(err);
     }
 }
-/*
+
 export async function getGenre(req: Request, res: Response) {
     try {
         const { id } = req.params;
@@ -33,16 +34,22 @@ export async function getGenre(req: Request, res: Response) {
         const genre = await genresServices.getById(Number(id));
         if (!genre) return res.status(404).send("Genre not found");
 
-        const resp = {
-            id: genre[0].id,
-            name: genre[0].name,
-            score: 0,
-            recommendations: genre.map(g => ({
+        let score = 0;
+        const recommendations = await Promise.all((genre.map(async g => {
+            const recommendation = await getRecommendation(g.id_recommendation);
+            score += recommendation.score;
+            return recommendation;
+        })));
 
-            })
+        const resp = {
+            id: genre[0].id_genre,
+            name: genre[0].genre_name,
+            score,
+            recommendations: recommendations
         }
+
         res.status(200).send(resp);
     } catch (err) {
         res.status(500).send(err);
     }
-}*/
+}

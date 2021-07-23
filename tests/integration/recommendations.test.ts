@@ -14,7 +14,7 @@ beforeEach(async () => {
 afterAll(() => {
     database.end();
 })
-/*
+
 describe("POST /recommendations", () => {
 
     it("should answer status 400 with invalid name", async () => {
@@ -107,7 +107,7 @@ describe("GET /recommendations/random", () => {
         const newRecommendation = await recommendationFactory.create([createdGenre.id_genre]);
         const response = await supertest(app).get(`/recommendations/random`);
         expect(response.status).toBe(200);
-        expect(response.body.id_recommendation).toBe(newRecommendation.id_recommendation);
+        expect(response.body.id).toBe(newRecommendation.id_recommendation);
     });
 })
 
@@ -127,7 +127,6 @@ describe("GET /recommendations/top/:amount", () => {
         newRecommendation3.score = 1;
         const response = await supertest(app).get(`/recommendations/top/` + 2);
         expect(response.status).toBe(200);
-        console.log(response.body);
         expect(JSON.stringify(response.body)).toMatch(JSON.stringify([newRecommendation2, newRecommendation3]));
     });
-})*/
+})
