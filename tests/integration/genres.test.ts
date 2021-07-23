@@ -11,6 +11,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
+    database.clear();
     database.end();
 })
 /*

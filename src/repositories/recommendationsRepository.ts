@@ -31,20 +31,31 @@ export async function deleteRecommendation(id: number) {
 }
 
 export async function randomRecommendation() {
-    return (await connection.query(`SELECT * FROM recommendations ORDER BY RANDOM() LIMIT 1`)).rows[0];
+    return (await connection.query(`SELECT id_recommendation AS id, name, "youtubeLink", score FROM recommendations ORDER BY RANDOM() LIMIT 1`)).rows[0];
 }
 
 export async function bestRecommendations() {
-    return (await connection.query(`SELECT * FROM recommendations WHERE score > 10`)).rows;
+    return (await connection.query(`SELECT id_recommendation AS id, name, "youtubeLink", score FROM recommendations WHERE score > 10`)).rows;
 }
 
 export async function worstRecommendations() {
-    return (await connection.query(`SELECT * FROM recommendations WHERE score < 11`)).rows;
+    return (await connection.query(`SELECT id_recommendation AS id, name, "youtubeLink", score FROM recommendations WHERE score < 11`)).rows;
 }
 
-export async function findGenresById(id: number): Promise<number[]> {
-    const genres = (await connection.query(`SELECT id_genre FROM recommendations_genres WHERE id_recommendation = $1`, [id])).rows;
-    return genres.map(genre => genre.id_genre);
+export async function findGenresById(id: number): Promise<object[]> {
+    const genres = (await connection.query(`
+    SELECT rg.id_genre, name 
+    FROM genres g
+    JOIN recommendations_genres rg
+    ON rg.id_genre = g.id_genre
+    WHERE rg.id_recommendation = $1
+    `, [id])).rows;
+    return genres.map(genre => {
+        return {
+            "id": genre.id_genre,
+            "name": genre.name
+        }
+    });
 }
 
 export async function topRecommendations(number: number = 10): Promise<{ id_recommendation: number, name: string, youtubeLink: string, score: number }[]> {

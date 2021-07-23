@@ -34,19 +34,19 @@ export async function deleteRecommendation(id: number): Promise<any> {
 
 export async function randomRecommendation(): Promise<any> {
     const randomNumber = Math.floor(Math.random() * 100);
-    let recommendations: object[] = [];
+    let recommendations: object[] = null;
     if (randomNumber <= 70) {
         recommendations = await recommendationsRepository.bestRecommendations();
     } else {
         recommendations = await recommendationsRepository.worstRecommendations();
     }
 
-    if (recommendations !== []) {
-        const randomRecommendation = Math.floor(Math.random() * (recommendations.length - 1));
-        return recommendations[randomRecommendation];
+    if (recommendations.length === 0) {
+        return await recommendationsRepository.randomRecommendation();
     }
 
-    return await recommendationsRepository.randomRecommendation();
+    const randomRecommendation = Math.floor(Math.random() * (recommendations.length - 1));
+    return recommendations[randomRecommendation];
 }
 
 export async function getGenresById(id: number): Promise<any> {

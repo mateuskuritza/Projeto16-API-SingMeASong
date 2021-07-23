@@ -47,7 +47,7 @@ export async function randomRecommendation(req: Request, res: Response) {
     try {
         const randomRecommendation = await recommendationsServices.randomRecommendation();
         if (!randomRecommendation) return res.status(404).send("No recommendation found");
-        const genres = await recommendationsServices.getGenresById(randomRecommendation.id_recommendation);
+        const genres = await recommendationsServices.getGenresById(randomRecommendation.id);
         randomRecommendation.genres = genres;
         res.status(200).send(randomRecommendation);
     } catch (err) {

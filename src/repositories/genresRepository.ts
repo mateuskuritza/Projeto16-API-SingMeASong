@@ -13,3 +13,24 @@ export async function create(name: string) {
 export async function getAll() {
     return (await connection.query(`SELECT id_genre, name FROM genres ORDER BY name ASC`)).rows;
 }
+
+export async function getById(id: number) {
+    return (await connection.query(`
+    SELECT g.id_genre, rg.id_recommendation, g.name AS genre_name, r.name as recommendation_name
+    FROM genres AS g 
+    JOIN "recommendations_genres" as rg 
+    ON g.id_genre = rg.id_genre
+    JOIN recommendations as r 
+    ON r.id_recommendation = rg.id_recommendation AND rg.id_genre = $1
+    `, [id])).rows;
+}
+
+export async function getRecommendationsGenres(id: number) {
+    return (await connection.query(`
+    SELECT g.id_genre as id, g.name AS name
+    FROM genres AS g 
+    JOIN "recommendations_genres" as rg 
+    ON g.id_genre = rg.id_genre
+    WHERE rg.id_recommendation = $1
+    `, [id])).rows;
+}
