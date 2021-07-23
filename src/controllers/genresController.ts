@@ -16,3 +16,12 @@ export async function newGenre(req: Request, res: Response) {
         res.status(500).send(err);
     }
 }
+
+export async function getAllGenres(req: Request, res: Response) {
+    try {
+        const genres = await genresServices.getAll();
+        res.status(200).send(genres);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}

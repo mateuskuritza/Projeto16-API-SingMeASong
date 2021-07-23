@@ -13,7 +13,7 @@ beforeEach(() => {
 afterAll(() => {
     database.end();
 })
-
+/*
 describe("POST /genres", () => {
     it("should create a new genre with status 201", async () => {
         const genre = genreFactory.getObject();
@@ -31,15 +31,20 @@ describe("POST /genres", () => {
         expect(result.status).toBe(409);
     });
 })
-/*
+*/
+
 describe("GET /genres", () => {
-    it("should return all genres", async () => {
-        const genres = database.getAllGenres();
+    it("should return all genres in alphabetical order", async () => {
+        const one = await genreFactory.create("A");
+        const two = await genreFactory.create("B");
         const result = await supertest(app).get("/genres");
-        expect(result.body).toEqual(genres);
+        expect(result.body).toEqual([
+            one,
+            two
+        ])
     });
 })
-
+/*
 describe("GET /genres/:id", () => {
     it("should return a genre with his recommendations", async () => {
         const genre = await genreFactory.create();

@@ -16,5 +16,6 @@ app.get("/recommendations/top/:amount", recommendationsController.topRecommendat
 
 
 app.post("/genres", genresController.newGenre);
+app.get("/genres", genresController.getAllGenres);
 
 export default app;

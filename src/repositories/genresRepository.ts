@@ -9,3 +9,7 @@ export async function create(name: string) {
     const result = await connection.query(`INSERT INTO genres (name) VALUES ($1) RETURNING *`, [name]);
     return result.rows[0];
 }
+
+export async function getAll() {
+    return (await connection.query(`SELECT id_genre, name FROM genres ORDER BY name ASC`)).rows;
+}
