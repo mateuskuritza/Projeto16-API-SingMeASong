@@ -11,7 +11,8 @@ beforeEach(async () => {
     await database.clear();
 });
 
-afterAll(() => {
+afterAll(async () => {
+    await database.clear();
     database.end();
 })
 

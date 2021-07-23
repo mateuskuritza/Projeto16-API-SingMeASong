@@ -10,8 +10,8 @@ beforeEach(async () => {
     await database.clear();
 });
 
-afterAll(() => {
-    database.clear();
+afterAll(async () => {
+    await database.clear();
     database.end();
 })
 

@@ -9,26 +9,28 @@ export async function validRecommendation(name: string, youtubeLink: string, gen
 }
 
 export async function saveRecommendation(name: string, youtubeLink: string, genresIds: number[]) {
-    await recommendationsRepository.create(name, genresIds, youtubeLink);
+    return await recommendationsRepository.create(name, genresIds, youtubeLink);
 }
 
-export async function findByYoutubeLink(youtubeLink: string): Promise<any> {
-    return await recommendationsRepository.findByYoutubeLink(youtubeLink);
+export async function findByYoutubeLinkOrName(youtubeLink: string, name: string): Promise<any> {
+    const byName = await recommendationsRepository.findByName(name);
+    const byLink = await recommendationsRepository.findByYoutubeLink(youtubeLink);
+    return byName || byLink;
 }
 
 export async function findById(id: number): Promise<any> {
     return await recommendationsRepository.findById(id);
 }
 
-export async function findByName(name: string): Promise<any> {
-    return await recommendationsRepository.findByName(name);
-}
-
 export async function upvoteRecommendation(id: number): Promise<any> {
     return await recommendationsRepository.upvoteRecommendation(id);
 }
 
-export async function downvoteRecommendation(id: number): Promise<any> {
+export async function downvoteRecommendation(id: number, score: number): Promise<any> {
+    if (score === -5) {
+        await deleteRecommendation(id);
+        return false
+    }
     return await recommendationsRepository.downvoteRecommendation(id);
 }
 
@@ -75,4 +77,12 @@ export async function getRandomRecommendationByGenreId(genreId: number): Promise
     const recommendation = await recommendationsRepository.getRandomRecommendationByGenreId(genreId);
     recommendation.genres = await getGenresById(recommendation.id_recommendation);
     return recommendation;
+}
+
+export async function topRecommendationsFormated(topRecommendations: []): Promise<any> {
+    return await Promise.all((topRecommendations.map(async (r: any) => {
+        const genres = await getGenresById(r.id_recommendation);
+        r.genres = genres;
+        return r;
+    })));
 }
