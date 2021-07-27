@@ -1,9 +1,0 @@
-CREATE TABLE "recommendations" ("id_recommendation" serial NOT NULL,"name" TEXT NOT NULL UNIQUE,"youtubeLink" TEXT NOT NULL UNIQUE,"score" integer NOT NULL DEFAULT '0',CONSTRAINT "recommendations_pk" PRIMARY KEY ("id_recommendation")) WITH (OIDS=FALSE);
-CREATE TABLE "genres" ("id_genre" serial NOT NULL,"name" TEXT NOT NULL UNIQUE,CONSTRAINT "genres_pk" PRIMARY KEY ("id_genre")) WITH (OIDS=FALSE);
-CREATE TABLE "recommendations_genres" ("id" serial NOT NULL,"id_recommendation" serial NOT NULL,"id_genre" integer NOT NULL,CONSTRAINT "recommendations_genres_pk" PRIMARY KEY ("id")) WITH (OIDS=FALSE);
-
-ALTER TABLE "recommendations_genres" ADD CONSTRAINT "recommendations_genres_fk0" FOREIGN KEY ("id_recommendation") REFERENCES "recommendations"("id_recommendation");
-ALTER TABLE "recommendations_genres" ADD CONSTRAINT "recommendations_genres_fk1" FOREIGN KEY ("id_genre") REFERENCES "genres"("id_genre");
-
-
-
