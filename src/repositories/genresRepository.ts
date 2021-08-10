@@ -1,6 +1,6 @@
 import connection from "../database/database";
 
-export async function validateGenresIds(genreIds: number[]): Promise<boolean> {
+export async function validateIds(genreIds: number[]): Promise<boolean> {
     const result = await connection.query(`SELECT * FROM genres WHERE id_genre IN (${genreIds.join(", ")})`);
     return result.rowCount === genreIds.length;
 }
@@ -26,7 +26,7 @@ export async function getById(id: number) {
     return result
 }
 
-export async function getRecommendationsGenres(id: number) {
+export async function getRecommendations(id: number) {
     return (await connection.query(`
     SELECT g.id_genre as id, g.name AS name
     FROM genres AS g 
